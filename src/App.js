@@ -3,7 +3,7 @@ import request from './request';
 import { ARTICLES_QUERY } from './queries';
 import Header from './Header';
 import Footer from './Footer';
-import Article from './Article';
+import List from './Article/List';
 
 class App extends Component {
   // definition
@@ -23,11 +23,10 @@ class App extends Component {
 
   // Renders
   render() {
-    const articles = this.state.articles.map(a => <Article key={a.id} {...a} />);
     return (
       <div className="App">
         <Header title="Billin code challenge" />
-        {articles}
+        <List articles={this.state.articles} />
         <Footer />
       </div>
     );

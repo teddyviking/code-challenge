@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 
 const Header = ({ title }) => (
-  <div>
+  <header>
     <h2>{title}</h2>
-  </div>
+  </header>
 );
 
 Header.propTypes = {

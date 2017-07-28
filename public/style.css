@@ -1,0 +1,47 @@
+body {
+	font-family: "Roboto", sans_serif;
+}
+
+header {
+	background-color: #03A9F4;
+	color: #ffffff;
+	padding: 3%;
+}
+
+footer {
+	background-color: #1976D2;
+	color: #ffffff;
+	padding: 3%;
+}
+
+h2 {
+	margin: 0;
+}
+
+.articleList {
+	margin: 5%;
+}
+
+.articleCard {
+	margin: 3%;
+	width: 25%;
+	display: inline-grid;
+	border: 1px solid #03A9F4;
+}
+
+.cardAuthor {
+	background-color: #03A9F4;
+	color: #ffffff;
+	padding: 5%;
+	text-align: center;
+}
+
+.cardContent {
+	width: 95%;
+	margin: 3%;
+}
+
+.cardTitle {
+	font-weight: bold;
+	font-size: 1.05em;
+}
