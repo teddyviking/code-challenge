@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import request from './request';
 import { ARTICLES_QUERY } from './queries';
+import Header from './Header';
+import Footer from './Footer';
+import Article from './Article';
 
 class App extends Component {
   // definition
@@ -20,10 +23,12 @@ class App extends Component {
 
   // Renders
   render() {
+    const articles = this.state.articles.map(a => <Article key={a.id} {...a} />);
     return (
       <div className="App">
-        <h2>Billin code challenge</h2>
-        <pre>{JSON.stringify(this.state.articles, null, 2)}</pre>
+        <Header title="Billin code challenge" />
+        {articles}
+        <Footer />
       </div>
     );
   }
