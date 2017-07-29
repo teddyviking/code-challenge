@@ -1,5 +1,5 @@
-import request from '../../request';
-import { ARTICLES_QUERY } from '../../queries';
+import request from '../../lib/request';
+import { ARTICLES_QUERY } from '../../lib/queries';
 import {
   REQUEST_ARTICLES,
   ARTICLES_SUCCESS,

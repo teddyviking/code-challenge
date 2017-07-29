@@ -18,6 +18,11 @@ h2 {
 	margin: 0;
 }
 
+.pageTitle a {
+	color: #ffffff;
+	text-decoration: none;
+}
+
 .articleList {
 	margin: 5%;
 }
@@ -36,6 +41,11 @@ h2 {
 	text-align: center;
 }
 
+.cardAuthor a {
+	color: #ffffff;
+	text-decoration: none;
+}
+
 .cardContent {
 	width: 95%;
 	margin: 3%;
@@ -44,4 +54,27 @@ h2 {
 .cardTitle {
 	font-weight: bold;
 	font-size: 1.05em;
+}
+
+.articleShow {
+	margin: 3%;
+	width: 90%;
+}
+
+.articleAuthor {
+	background-color: #03A9F4;
+	color: #ffffff;
+	padding: 2%;
+	text-align: center;
+	font-size: 1.18em;
+}
+
+.articleContent {
+	width: 95%;
+	margin: 3%;
+}
+
+.articleTags {
+	font-weight: bold;
+	font-size: 1em;
 }

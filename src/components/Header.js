@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
 
 const Header = ({ title }) => (
   <header>
-    <h2>{title}</h2>
+    <h2 className="pageTitle"><Link to="/">{title}</Link></h2>
   </header>
 );
 
