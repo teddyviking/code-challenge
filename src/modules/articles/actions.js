@@ -9,7 +9,7 @@ import {
 export function getArticles() {
   return function action(dispatch) {
     dispatch(articlesRequest());
-    request(ARTICLES_QUERY).then(response => {
+    return request(ARTICLES_QUERY).then(response => {
       dispatch(articlesSuccess(response.data.articles));
     }).catch(error => {
       dispatch(articlesFailure(error));
@@ -43,7 +43,7 @@ export function fetchArticle(id) {
   }`;
   return function action(dispatch) {
     dispatch(articlesRequest());
-    request(ARTICLE_QUERY, variables).then(response => {
+    return request(ARTICLE_QUERY, variables).then(response => {
       dispatch(fetchArticleSuccess(response.data.articles[0]));
     }).catch(error => {
       dispatch(articlesFailure(error));

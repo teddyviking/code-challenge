@@ -1,4 +1,10 @@
 import axios from 'axios';
+import httpAdapter from 'axios/lib/adapters/http';
+
+// Fix nock issue with axios for testing
+const host = 'http://localhost';
+axios.defaults.host = host;
+axios.defaults.adapter = httpAdapter;
 
 export default function(query, variables) {
   return new Promise((resolve, reject) => {
