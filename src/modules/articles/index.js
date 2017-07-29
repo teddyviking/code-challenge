@@ -1,4 +1,7 @@
 import * as actionTypes from './actionTypes';
+import {
+  filterPreviousArticles,
+  articleInArray } from './helpers';
 
 export * from './actions';
 
@@ -25,18 +28,11 @@ export default function(state = defaultState, action) {
 
 function articlesList(state = [], action) {
   const newList = [...state];
-  let sameArt;
   switch (action.type) {
     case actionTypes.ARTICLES_SUCCESS:
-      action.articles.forEach(a => {
-        sameArt = newList.find(arti => arti.id === a.id);
-        if (!sameArt) {
-          newList.push(a);
-        }
-      });
-      return newList;
+      return [...state, ...filterPreviousArticles(state, action.articles)];
     case actionTypes.FETCH_ARTICLE_SUCCESS:
-      if (!newList.find(a => a.id === action.article.id)) {
+      if (!articleInArray(newList, action.article)) {
         newList.push(action.article);
       }
       return newList;
