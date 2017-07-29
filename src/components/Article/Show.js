@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { getArticles } from '../../modules/articles';
+import { fetchArticle } from '../../modules/articles';
 
 class Show extends Component {
   // definition
@@ -17,9 +17,10 @@ class Show extends Component {
   }
   // lifecycle
   componentWillMount() {
-    const { articles, dispatch } = this.props;
-    if (!articles.list.length) {
-      dispatch(getArticles());
+    const { articles, dispatch, params } = this.props;
+    const article = articles.list.find(a => a.id === params.id);
+    if (!article) {
+      dispatch(fetchArticle(params.id));
     }
   }
 

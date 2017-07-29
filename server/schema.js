@@ -7,6 +7,8 @@ import {
 } from 'graphql';
 import db from './db';
 
+const ObjectId = require('mongoose').Types.ObjectId;
+
 const articleType = new GraphQLObjectType({
   name: 'Article',
   description: 'This represents a Article',
@@ -41,8 +43,15 @@ const Query = new GraphQLObjectType({
   fields: () => ({
     articles: {
       type: new GraphQLList(articleType),
-      resolve() {
-        return db.Article.find();
+      args: {
+        id: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parents, args) {
+        const params = {};
+        if (args.id) params._id = new ObjectId(args.id);
+        return db.Article.find(params);
       },
     },
   }),
