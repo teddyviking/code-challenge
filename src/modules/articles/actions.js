@@ -3,12 +3,9 @@ import { ARTICLES_QUERY, ARTICLE_QUERY, CREATE_ARTICLE_QUERY } from '../../lib/q
 import actionTypes from './actionTypes';
 
 export function fetchArticle(id) {
-  const variables = `{
-    "id": "${id}"
-  }`;
   return function action(dispatch) {
     dispatch(articlesRequest());
-    return request(ARTICLE_QUERY, variables).then(response => {
+    return request(ARTICLE_QUERY, { id }).then(response => {
       dispatch(articlesSuccess());
       dispatch(addArticle(response.data.articles[0]));
     }).catch(error => {
@@ -30,17 +27,10 @@ export function fetchArticles() {
 }
 
 export function createArticle(article) {
-  const variables = `{
-    "author": "${article.author}",
-    "content": "${article.content}",
-    "published": "${article.published}",
-    "tags": "${article.tags}",
-    "title": "${article.title}"
-  }`;
   return function action(dispatch) {
     return new Promise((resolve, reject) => {
       dispatch(articlesRequest());
-      return request(CREATE_ARTICLE_QUERY, variables).then(response => {
+      return request(CREATE_ARTICLE_QUERY, article).then(response => {
         const newArticle = response.data.addArticle;
         dispatch(articlesSuccess());
         dispatch(addArticle(newArticle));
@@ -88,13 +78,9 @@ function addArticles(articles) {
 }
 
 export function editArticle(id, changes) {
-  const variables = `{
-    "id": "${id}"
-    "changes": "${changes}"
-  }`;
   return function action(dispatch) {
     dispatch(articlesRequest());
-    return request(ARTICLE_QUERY, variables).then(response => {
+    return request(ARTICLE_QUERY, { id, ...changes }).then(response => {
       dispatch(articlesSuccess());
       dispatch(updateArticle(response.data.articles[0]));
     }).catch(error => {

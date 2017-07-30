@@ -30,5 +30,6 @@ mutation AddArticle($author: String, $content: String, $published: Boolean, $tag
     tags
     title
     id
+    excerpt
   }
 }`;
