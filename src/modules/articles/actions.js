@@ -1,41 +1,6 @@
 import request from '../../lib/request';
 import { ARTICLES_QUERY, ARTICLE_QUERY } from '../../lib/queries';
-import {
-  REQUEST_ARTICLES,
-  ARTICLES_SUCCESS,
-  ARTICLES_FAILURE,
-  FETCH_ARTICLE_SUCCESS } from './actionTypes';
-
-export function getArticles() {
-  return function action(dispatch) {
-    dispatch(articlesRequest());
-    return request(ARTICLES_QUERY).then(response => {
-      dispatch(articlesSuccess(response.data.articles));
-    }).catch(error => {
-      dispatch(articlesFailure(error));
-    });
-  };
-}
-
-function articlesRequest() {
-  return {
-    type: REQUEST_ARTICLES,
-  };
-}
-
-function articlesSuccess(articles) {
-  return {
-    type: ARTICLES_SUCCESS,
-    articles,
-  };
-}
-
-function articlesFailure(error) {
-  return {
-    type: ARTICLES_FAILURE,
-    error,
-  };
-}
+import actionTypes from './actionTypes';
 
 export function fetchArticle(id) {
   const variables = `{
@@ -44,16 +9,101 @@ export function fetchArticle(id) {
   return function action(dispatch) {
     dispatch(articlesRequest());
     return request(ARTICLE_QUERY, variables).then(response => {
-      dispatch(fetchArticleSuccess(response.data.articles[0]));
+      dispatch(articlesSuccess());
+      dispatch(addArticle(response.data.articles[0]));
     }).catch(error => {
       dispatch(articlesFailure(error));
     });
   };
 }
 
-function fetchArticleSuccess(article) {
+export function fetchArticles() {
+  return function action(dispatch) {
+    dispatch(articlesRequest());
+    return request(ARTICLES_QUERY).then(response => {
+      dispatch(articlesSuccess());
+      dispatch(addArticles(response.data.articles));
+    }).catch(error => {
+      dispatch(articlesFailure(error));
+    });
+  };
+}
+
+function articlesRequest() {
   return {
-    type: FETCH_ARTICLE_SUCCESS,
+    type: actionTypes.REQUEST_ARTICLES,
+  };
+}
+
+function articlesSuccess(articles) {
+  return {
+    type: actionTypes.ARTICLES_SUCCESS,
+    articles,
+  };
+}
+
+function articlesFailure(error) {
+  return {
+    type: actionTypes.ARTICLES_FAILURE,
+    error,
+  };
+}
+
+function addArticle(article) {
+  return {
+    type: actionTypes.ADD_ARTICLE,
     article,
+  };
+}
+
+function addArticles(articles) {
+  return {
+    type: actionTypes.ADD_ARTICLES,
+    articles,
+  };
+}
+
+export function editArticle(id, changes) {
+  const variables = `{
+    "id": "${id}"
+    "changes": "${changes}"
+  }`;
+  return function action(dispatch) {
+    dispatch(articlesRequest());
+    return request(ARTICLE_QUERY, variables).then(response => {
+      dispatch(articlesSuccess());
+      dispatch(updateArticle(response.data.articles[0]));
+    }).catch(error => {
+      dispatch(articlesFailure(error));
+    });
+  };
+}
+
+function updateArticle(article) {
+  return {
+    type: actionTypes.UPDATE_ARTICLE,
+    article,
+  };
+}
+
+export function deleteArticle(id) {
+  const variables = `{
+    "id": "${id}"
+  }`;
+  return function action(dispatch) {
+    dispatch(articlesRequest());
+    return request(ARTICLE_QUERY, variables).then(response => {
+      dispatch(articlesSuccess());
+      dispatch(removeArticle(response.data.articles[0].id));
+    }).catch(error => {
+      dispatch(articlesFailure(error));
+    });
+  };
+}
+
+function removeArticle(articleId) {
+  return {
+    type: actionTypes.REMOVE_ARTICLE,
+    articleId,
   };
 }

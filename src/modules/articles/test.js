@@ -3,7 +3,11 @@ import nock from 'nock';
 import thunk from 'redux-thunk';
 import reducer from './index';
 import actionTypes from './actionTypes';
-import { fetchArticle, getArticles } from './actions';
+import {
+  fetchArticle,
+  fetchArticles,
+  editArticle,
+  deleteArticle } from './actions';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -43,9 +47,9 @@ describe('Articles reducer', () => {
     });
   });
 
-  it('Get a single article', () => {
+  it('Adds a single article', () => {
     const action = {
-      type: actionTypes.FETCH_ARTICLE_SUCCESS,
+      type: actionTypes.ADD_ARTICLE,
       article: fakeArticle,
     };
     const newState = reducer(defaultState, action);
@@ -54,15 +58,51 @@ describe('Articles reducer', () => {
     expect(newState.list[0]).toEqual(fakeArticle);
   });
 
-  it('Get all articles', () => {
+  it('Adds multiple articles', () => {
     const action = {
-      type: actionTypes.ARTICLES_SUCCESS,
+      type: actionTypes.ADD_ARTICLES,
       articles: [fakeArticle, fakeArticle2],
     };
     const newState = reducer(defaultState, action);
     expect(newState.list).toHaveLength(2);
     expect(newState.list[1]).toEqual(fakeArticle2);
     expect(newState).not.toBe(defaultState);
+  });
+
+  it('Does not add already listed articles', () => {
+    const action = {
+      type: actionTypes.ADD_ARTICLE,
+      article: fakeArticle,
+    };
+    const baseState = Object.assign({}, defaultState, { list: [fakeArticle] });
+    const newState = reducer(baseState, action);
+    expect(newState).not.toBe(defaultState);
+    expect(newState.list).toHaveLength(1);
+  });
+
+  it('Updates an article', () => {
+    const action = {
+      type: actionTypes.UPDATE_ARTICLE,
+      article: Object.assign({}, fakeArticle, { title: 'New title' }),
+    };
+    const baseState = Object.assign({}, defaultState, { list: [fakeArticle] });
+    const newState = reducer(baseState, action);
+    expect(newState).not.toBe(baseState);
+    expect(newState.list).toHaveLength(1);
+    expect(newState.list[0].id).toBe(fakeArticle.id);
+    expect(newState.list[0].title).not.toEqual(fakeArticle.title);
+  });
+
+  it('Deletes an article', () => {
+    const action = {
+      type: actionTypes.REMOVE_ARTICLE,
+      articleId: fakeArticle.id,
+    };
+    const baseState = Object.assign({}, defaultState, { list: [fakeArticle] });
+    const newState = reducer(baseState, action);
+    expect(newState).not.toBe(baseState);
+    expect(newState.list).toHaveLength(0);
+    expect(newState.list).not.toContainEqual(fakeArticle);
   });
 });
 
@@ -71,14 +111,15 @@ describe('Article actions', () => {
     nock.cleanAll();
   });
 
-  it('creates FETCH_ARTICLE_SUCCESS when fetching an article has been done', () => {
+  it('creates ADD_ARTICLE when fetching an article has been done', () => {
     nock('http://localhost:4000')
       .post('/graphql')
       .reply(200, { data: { articles: [fakeArticle] } });
 
     const expectedActions = [
       { type: actionTypes.REQUEST_ARTICLES },
-      { type: actionTypes.FETCH_ARTICLE_SUCCESS, article: fakeArticle },
+      { type: actionTypes.ARTICLES_SUCCESS },
+      { type: actionTypes.ADD_ARTICLE, article: fakeArticle },
     ];
     const store = mockStore({ articles: [] });
     return store.dispatch(fetchArticle()).then(() => {
@@ -86,17 +127,50 @@ describe('Article actions', () => {
     });
   });
 
-  it('creates ARTICLE_SUCCESS when fetching all articles has been done', () => {
+  it('creates ADD_ARTICLES when fetching all articles has been done', () => {
     nock('http://localhost:4000')
       .post('/graphql')
       .reply(200, { data: { articles: [fakeArticle, fakeArticle2] } });
 
     const expectedActions = [
       { type: actionTypes.REQUEST_ARTICLES },
-      { type: actionTypes.ARTICLES_SUCCESS, articles: [fakeArticle, fakeArticle2] },
+      { type: actionTypes.ARTICLES_SUCCESS },
+      { type: actionTypes.ADD_ARTICLES, articles: [fakeArticle, fakeArticle2] },
     ];
     const store = mockStore({ articles: [] });
-    return store.dispatch(getArticles()).then(() => {
+    return store.dispatch(fetchArticles()).then(() => {
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  it('creates UPDATE_ARTICLE when editing an article has been done', () => {
+    nock('http://localhost:4000')
+      .post('/graphql')
+      .reply(200, { data: { articles: [fakeArticle] } });
+
+    const expectedActions = [
+      { type: actionTypes.REQUEST_ARTICLES },
+      { type: actionTypes.ARTICLES_SUCCESS },
+      { type: actionTypes.UPDATE_ARTICLE, article: fakeArticle },
+    ];
+    const store = mockStore({ articles: [fakeArticle] });
+    return store.dispatch(editArticle(fakeArticle.id, { title: 'new title' })).then(() => {
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  it('creates REMOVE_ARTICLE when deleting an article has been done', () => {
+    nock('http://localhost:4000')
+      .post('/graphql')
+      .reply(200, { data: { articles: [fakeArticle] } });
+
+    const expectedActions = [
+      { type: actionTypes.REQUEST_ARTICLES },
+      { type: actionTypes.ARTICLES_SUCCESS },
+      { type: actionTypes.REMOVE_ARTICLE, articleId: fakeArticle.id },
+    ];
+    const store = mockStore({ articles: [fakeArticle] });
+    return store.dispatch(deleteArticle()).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
     });
   });
