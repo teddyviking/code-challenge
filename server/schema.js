@@ -63,6 +63,22 @@ const addArticleQuery = {
   },
 };
 
+const removeArticleQuery = {
+  type: articleType,
+  args: {
+    id: {
+      type: GraphQLString,
+    },
+  },
+  resolve: (parent, args) => {
+    return new Promise((resolve) => {
+      const params = {};
+      if (args.id) params._id = new ObjectId(args.id);
+      db.Article.remove(params).then(() => resolve({ id: args.id }));
+    });
+  },
+};
+
 const Query = new GraphQLObjectType({
   name: 'Query',
   description: 'This is a root query',
@@ -88,6 +104,7 @@ const Mutation = new GraphQLObjectType({
   fields: () => {
     return {
       addArticle: addArticleQuery,
+      removeArticle: removeArticleQuery,
     };
   },
 });

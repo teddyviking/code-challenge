@@ -33,3 +33,10 @@ mutation AddArticle($author: String, $content: String, $published: Boolean, $tag
     excerpt
   }
 }`;
+
+export const REMOVE_ARTICLE_QUERY = `
+mutation RemoveArticle($id: String) {
+  removeArticle(id: $id) {
+    id
+  }
+}`;

@@ -5,7 +5,7 @@ import Footer from './Footer';
 const App = ({ children }) => (
   <div className="App">
     <Header title="Billin code challenge" />
-    <article>
+    <article className="pageWrap">
       {children}
     </article>
     <Footer />

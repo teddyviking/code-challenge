@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { fetchArticle } from '../../modules/articles';
+import { push } from 'react-router-redux';
+import { fetchArticle, deleteArticle } from '../../modules/articles';
 
 class Show extends Component {
   // definition
@@ -15,13 +16,26 @@ class Show extends Component {
       id: PropTypes.string,
     }),
   }
+
+  constructor(props) {
+    super(props);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
   // lifecycle
   componentWillMount() {
     const { articles, dispatch, params } = this.props;
     const article = articles.list.find(a => a.id === params.id);
-    if (!article) {
-      dispatch(fetchArticle(params.id));
-    }
+    if (!article) dispatch(fetchArticle(params.id));
+  }
+
+  handleDelete() {
+    const { dispatch, params } = this.props;
+    dispatch(deleteArticle(params.id))
+    .then(() => {
+      dispatch(push('/'));
+    })
+    .catch(error => this.setState({ error }));
   }
 
   // Renders
@@ -37,6 +51,12 @@ class Show extends Component {
           <p className="articleTags">Tags: {tags}</p>
           <p>{article.content}</p>
         </div>
+        <button
+          onClick={this.handleDelete}
+          className="deleteButton"
+        >
+          Delete
+        </button>
       </div>
     );
   }

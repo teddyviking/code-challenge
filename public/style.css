@@ -1,4 +1,8 @@
-html, body {
+* {
+  margin: 0;
+}
+
+html, body, #root, .App {
 	height: 100%;
 	width: 100%;
 }
@@ -7,10 +11,15 @@ body {
 	font-family: "Roboto", sans_serif;
 }
 
+.pageWrap {
+	min-height: 95%;
+}
+
 header {
 	background-color: #03A9F4;
 	color: #ffffff;
 	padding: 3%;
+	height: 4%;
 }
 
 footer {
@@ -75,6 +84,7 @@ h2 {
 }
 
 .articleShow {
+	position: absolute;
 	margin: 3%;
 	width: 90%;
 }
@@ -107,4 +117,8 @@ h2 {
 input, textarea {
 	display: block;
 	margin: 1%;
+}
+
+.deleteButton {
+	float: right;
 }

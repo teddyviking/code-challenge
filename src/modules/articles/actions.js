@@ -1,5 +1,9 @@
 import request from '../../lib/request';
-import { ARTICLES_QUERY, ARTICLE_QUERY, CREATE_ARTICLE_QUERY } from '../../lib/queries';
+import {
+  ARTICLES_QUERY,
+  ARTICLE_QUERY,
+  CREATE_ARTICLE_QUERY,
+  REMOVE_ARTICLE_QUERY } from '../../lib/queries';
 import actionTypes from './actionTypes';
 
 export function fetchArticle(id) {
@@ -97,16 +101,19 @@ function updateArticle(article) {
 }
 
 export function deleteArticle(id) {
-  const variables = `{
-    "id": "${id}"
-  }`;
   return function action(dispatch) {
-    dispatch(articlesRequest());
-    return request(ARTICLE_QUERY, variables).then(response => {
-      dispatch(articlesSuccess());
-      dispatch(removeArticle(response.data.articles[0].id));
-    }).catch(error => {
-      dispatch(articlesFailure(error));
+    return new Promise((resolve, reject) => {
+      dispatch(articlesRequest());
+      return request(REMOVE_ARTICLE_QUERY, { id }).then(response => {
+        const deletedId = response.data.removeArticle.id;
+				console.log(deletedId);
+        dispatch(articlesSuccess());
+        dispatch(removeArticle(deletedId));
+        return resolve(deletedId);
+      }).catch(error => {
+        dispatch(articlesFailure(error));
+        return reject(error);
+      });
     });
   };
 }
