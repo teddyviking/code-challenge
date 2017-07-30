@@ -20,3 +20,15 @@ export const ARTICLE_QUERY = `query Articles($id: String){
     tags
   }
 }`;
+
+export const CREATE_ARTICLE_QUERY = `
+mutation AddArticle($author: String, $content: String, $published: Boolean, $tags: [String], $title: String) {
+  addArticle(author: $author, content: $content, published: $published, tags: $tags, title: $title) {
+    author
+    content
+    published
+    tags
+    title
+    id
+  }
+}`;

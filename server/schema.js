@@ -37,6 +37,32 @@ const articleType = new GraphQLObjectType({
   }),
 });
 
+const addArticleQuery = {
+  type: articleType,
+  args: {
+    author: {
+      type: GraphQLString,
+    },
+    content: {
+      type: GraphQLString,
+    },
+    published: {
+      type: GraphQLBoolean,
+    },
+    tags: {
+      type: new GraphQLList(GraphQLString),
+    },
+    title: {
+      type: GraphQLString,
+    },
+  },
+  resolve: (parent, args) => {
+    const article = new db.Article(args);
+    article.excerpt = article.content.slice(0, 350);
+    return article.save();
+  },
+};
+
 const Query = new GraphQLObjectType({
   name: 'Query',
   description: 'This is a root query',
@@ -57,8 +83,18 @@ const Query = new GraphQLObjectType({
   }),
 });
 
+const Mutation = new GraphQLObjectType({
+  name: 'Mutations',
+  fields: () => {
+    return {
+      addArticle: addArticleQuery,
+    };
+  },
+});
+
 const Schema = new GraphQLSchema({
   query: Query,
+  mutation: Mutation,
 });
 
 export default Schema;

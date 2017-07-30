@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import List from './Article/List';
-import { getArticles } from '../modules/articles';
+import { fetchArticles } from '../modules/articles';
 
 class Home extends Component {
   // definition
@@ -16,7 +16,7 @@ class Home extends Component {
   // lifecycle
   componentWillMount() {
     const { dispatch } = this.props;
-    dispatch(getArticles());
+    dispatch(fetchArticles());
   }
 
   // Renders

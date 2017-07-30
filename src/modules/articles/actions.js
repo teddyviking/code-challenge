@@ -1,5 +1,5 @@
 import request from '../../lib/request';
-import { ARTICLES_QUERY, ARTICLE_QUERY } from '../../lib/queries';
+import { ARTICLES_QUERY, ARTICLE_QUERY, CREATE_ARTICLE_QUERY } from '../../lib/queries';
 import actionTypes from './actionTypes';
 
 export function fetchArticle(id) {
@@ -25,6 +25,30 @@ export function fetchArticles() {
       dispatch(addArticles(response.data.articles));
     }).catch(error => {
       dispatch(articlesFailure(error));
+    });
+  };
+}
+
+export function createArticle(article) {
+  const variables = `{
+    "author": "${article.author}",
+    "content": "${article.content}",
+    "published": "${article.published}",
+    "tags": "${article.tags}",
+    "title": "${article.title}"
+  }`;
+  return function action(dispatch) {
+    return new Promise((resolve, reject) => {
+      dispatch(articlesRequest());
+      return request(CREATE_ARTICLE_QUERY, variables).then(response => {
+        const newArticle = response.data.addArticle;
+        dispatch(articlesSuccess());
+        dispatch(addArticle(newArticle));
+        return resolve(newArticle);
+      }).catch(error => {
+        dispatch(articlesFailure(error));
+        return reject(error);
+      });
     });
   };
 }

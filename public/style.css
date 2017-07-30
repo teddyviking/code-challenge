@@ -1,3 +1,8 @@
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
 body {
 	font-family: "Roboto", sans_serif;
 }
@@ -18,7 +23,20 @@ h2 {
 	margin: 0;
 }
 
+.pageTitle {
+	display: inline-grid;
+}
+
 .pageTitle a {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.newArticle {
+	display: inline-grid;
+	float: right;
+}
+.newArticle a {
 	color: #ffffff;
 	text-decoration: none;
 }
@@ -77,4 +95,16 @@ h2 {
 .articleTags {
 	font-weight: bold;
 	font-size: 1em;
+}
+
+.articleForm {
+	height: 100%;
+	width: 95%;
+	margin: 3%;
+	margin-left: 6%;
+}
+
+input, textarea {
+	display: block;
+	margin: 1%;
 }
