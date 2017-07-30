@@ -6,11 +6,6 @@ import { createArticle } from '../../modules/articles';
 class New extends Component {
   // definition
   static propTypes = {
-    articles: PropTypes.shape({
-      list: PropTypes.arrayOf(PropTypes.object),
-      fetching: PropTypes.bool,
-      error: PropTypes.string,
-    }),
     dispatch: PropTypes.func,
   }
   constructor(props) {
@@ -34,13 +29,18 @@ class New extends Component {
   handleSubmit(event) {
     const dispatch = this.props.dispatch;
     event.preventDefault();
-    this.props.dispatch(createArticle(this.state))
+    const params = {
+      ...this.state,
+      tags: this.state.tags.split(', '),
+    };
+    this.props.dispatch(createArticle(params))
       .then(article => dispatch(push(`/${article.id}`)))
       .catch(error => this.setState({ error }));
   }
 
   // Renders
   render() {
+    const error = this.state.error ? this.state.error.toString() : '';
     return (
       <div className="articleForm">
         <form onSubmit={this.handleSubmit}>
@@ -75,20 +75,18 @@ class New extends Component {
             <input
               type="text"
               name="tags"
-              value={this.state.value}
+              value={this.state.tags}
               onChange={this.handleChange}
             />
           </label>
           <input type="submit" value="Submit" />
         </form>
-        <div>{this.state.error}</div>
+        <div>{error}</div>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  articles: state.articles,
-});
+const mapStateToProps = () => ({});
 
 export default connect(mapStateToProps)(New);
