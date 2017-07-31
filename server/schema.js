@@ -63,6 +63,40 @@ const addArticleQuery = {
   },
 };
 
+const editArticleQuery = {
+  type: articleType,
+  args: {
+    author: {
+      type: GraphQLString,
+    },
+    content: {
+      type: GraphQLString,
+    },
+    id: {
+      type: GraphQLString,
+    },
+    published: {
+      type: GraphQLBoolean,
+    },
+    tags: {
+      type: new GraphQLList(GraphQLString),
+    },
+    title: {
+      type: GraphQLString,
+    },
+  },
+  resolve: (parent, args) => {
+    return new Promise((resolve, reject) => {
+      return db.Article.findById(args.id).then((article) => {
+        Object.keys(args).forEach((arg) => {
+          if (arg !== 'id') article[arg] = args[arg];
+        });
+        article.save().then(a => resolve(a));
+      }).catch(error => reject(error));
+    });
+  },
+};
+
 const removeArticleQuery = {
   type: articleType,
   args: {
@@ -104,6 +138,7 @@ const Mutation = new GraphQLObjectType({
   fields: () => {
     return {
       addArticle: addArticleQuery,
+      editArticle: editArticleQuery,
       removeArticle: removeArticleQuery,
     };
   },

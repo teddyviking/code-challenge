@@ -146,7 +146,7 @@ describe('Article actions', () => {
   it('creates UPDATE_ARTICLE when editing an article has been done', () => {
     nock('http://localhost:4000')
       .post('/graphql')
-      .reply(200, { data: { articles: [fakeArticle] } });
+      .reply(200, { data: { editArticle: fakeArticle } });
 
     const expectedActions = [
       { type: actionTypes.REQUEST_ARTICLES },

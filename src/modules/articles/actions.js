@@ -3,17 +3,23 @@ import {
   ARTICLES_QUERY,
   ARTICLE_QUERY,
   CREATE_ARTICLE_QUERY,
+  EDIT_ARTICLE_QUERY,
   REMOVE_ARTICLE_QUERY } from '../../lib/queries';
 import actionTypes from './actionTypes';
 
 export function fetchArticle(id) {
   return function action(dispatch) {
-    dispatch(articlesRequest());
-    return request(ARTICLE_QUERY, { id }).then(response => {
-      dispatch(articlesSuccess());
-      dispatch(addArticle(response.data.articles[0]));
-    }).catch(error => {
-      dispatch(articlesFailure(error));
+    return new Promise((resolve, reject) => {
+      dispatch(articlesRequest());
+      return request(ARTICLE_QUERY, { id }).then(response => {
+        const article = response.data.articles[0];
+        dispatch(articlesSuccess());
+        dispatch(addArticle(article));
+        return resolve(article);
+      }).catch(error => {
+        dispatch(articlesFailure(error));
+        return reject(error);
+      });
     });
   };
 }
@@ -83,12 +89,17 @@ function addArticles(articles) {
 
 export function editArticle(id, changes) {
   return function action(dispatch) {
-    dispatch(articlesRequest());
-    return request(ARTICLE_QUERY, { id, ...changes }).then(response => {
-      dispatch(articlesSuccess());
-      dispatch(updateArticle(response.data.articles[0]));
-    }).catch(error => {
-      dispatch(articlesFailure(error));
+    return new Promise((resolve, reject) => {
+      dispatch(articlesRequest());
+      return request(EDIT_ARTICLE_QUERY, { id, ...changes }).then(response => {
+        const article = response.data.editArticle;
+        dispatch(articlesSuccess());
+        dispatch(updateArticle(article));
+        return resolve(article);
+      }).catch(error => {
+        dispatch(articlesFailure(error));
+        return reject(error);
+      });
     });
   };
 }
