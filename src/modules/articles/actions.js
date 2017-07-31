@@ -106,7 +106,6 @@ export function deleteArticle(id) {
       dispatch(articlesRequest());
       return request(REMOVE_ARTICLE_QUERY, { id }).then(response => {
         const deletedId = response.data.removeArticle.id;
-				console.log(deletedId);
         dispatch(articlesSuccess());
         dispatch(removeArticle(deletedId));
         return resolve(deletedId);
